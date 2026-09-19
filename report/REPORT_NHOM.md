@@ -1,6 +1,6 @@
 # Báo Cáo Nhóm — Lab 7: Embedding & Vector Store
 
-**Nhóm:** [Tên nhóm]
+**Nhóm:** Sentinel
 **Thành viên:** [Họ tên từng thành viên]
 **Ngày:** [Ngày nộp]
 
@@ -14,20 +14,22 @@
 
 ### Chủ đề (Domain) & Lý Do Chọn
 
-**Chủ đề:** [ví dụ: Customer support FAQ, Luật Việt Nam, công thức nấu ăn, ...]
+**Chủ đề:** Học phí hệ đại học chính quy tại Đại học Kinh tế Quốc dân (NEU)
 
 **Tại sao nhóm chọn chủ đề này?**
-> *Viết 2-3 câu:*
+Nhóm chọn học phí NEU vì dữ liệu có nhiều mức thu theo khóa, tín chỉ và chương trình đào tạo, phù hợp để thử nghiệm retrieval trên các câu hỏi có điều kiện cụ thể. Hai tài liệu hiện có cho phép so sánh một bài tổng hợp tham khảo với nguồn chính thức dẫn Quyết định 985/QĐ-ĐHKTQD, qua đó đánh giá ảnh hưởng của độ tin cậy và phiên bản tài liệu đến kết quả truy xuất.
 
 ### Danh sách tài liệu (Data Inventory)
 
 | # | Tên tài liệu | Nguồn (Source URL) | Ngày lấy / Phiên bản | Số ký tự | Metadata đã gán |
 |---|--------------|------------|--------------------|----------|-----------------|
-| 1 | | | | | |
-| 2 | | | | | |
+| 1 | Học phí NEU 2026: Cập nhật đầy đủ, mới nhất tháng 9/2026 | https://dienthoaivui.com.vn/back-to-school-hoc-phi-neu | Lấy ngày 2026-09-19; bài đăng ngày 2026-04-16; không có ngày hiệu lực chính thức; HTTP `200 OK`; HTML | 16.241 | `doc_id=back-to-school-hoc-phi-neu`, `audience=student`, `department=admissions`, `category=tuition-overview`, `language=vi`, `document_version=article-2026-04-16`, `license_or_permission=public-third-party-source-no-explicit-reuse-license` |
+| 2 | Học phí NEU năm học 2026–2027 theo Quyết định 985/QĐ-ĐHKTQD | https://fit.neu.edu.vn/post/hoc-phi-neu-nam-hoc-2026-2027-theo-quyet-dinh-985 | Lấy ngày 2026-09-19; bài đăng ngày 2026-08-16; Quyết định ngày 2026-08-10; hiệu lực 2026-08-01 đến 2027-07-31; HTTP `200 OK`; HTML | 6.598 | `doc_id=hoc-phi-neu-nam-hoc-2026-2027-theo-quyet-dinh-985`, `audience=student`, `department=finance`, `category=tuition-per-credit`, `language=vi`, `document_version=QD985-AY2026-2027`, `license_or_permission=public-official-source-no-explicit-reuse-license` |
 | 3 | | | | | |
 | 4 | | | | | |
 | 5 | | | | | |
+
+**Kết quả kiểm tra nguồn:** Cả hai URL trả `HTTP 200 OK` khi kiểm tra ngày 2026-09-19 bằng `curl.exe -I -L` và đều là HTML, nên crawler mẫu có thể xử lý. `robots.txt` của Điện Thoại Vui không cấm đường dẫn bài viết; `robots.txt` của `fit.neu.edu.vn` khai báo `Allow: /` và cũng không cấm đường dẫn nguồn số 2. Nguồn số 1 là bài tổng hợp của bên thứ ba, không phải công bố chính thức của NEU, không nêu ngày hiệu lực và còn ghi rõ các mức học phí chỉ mang tính tham khảo; vì vậy không dùng riêng nguồn này để tạo gold answer. Nguồn số 2 thuộc tên miền Khoa Công nghệ thông tin NEU, dẫn Quyết định 985/QĐ-ĐHKTQD và nêu rõ hiệu lực từ ngày 2026-08-01 đến hết ngày 2027-07-31, nên được ưu tiên khi hai nguồn mâu thuẫn. Cả hai trang đều truy cập công khai nhưng không nêu giấy phép tái sử dụng riêng; nhóm chỉ trích xuất phần cần thiết cho mục đích học tập, ghi nguồn đầy đủ và không coi khả năng truy cập công khai là giấy phép sao chép không giới hạn.
 
 **Danh sách kiểm tra quản trị dữ liệu (Data governance checklist):**
 - [ ] Tập tài liệu (Corpus) chỉ chứa nguồn công khai/được phép dùng và không chứa dữ liệu cá nhân, thông tin đăng nhập hoặc tài liệu nội bộ.
