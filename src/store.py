@@ -38,7 +38,10 @@ class EmbeddingStore:
 
             # Tạo collection mới hoặc lấy lại collection đã tồn tại.
             client = chromadb.Client()
-            self._collection = client.get_or_create_collection(name=self._collection_name)
+            self._collection = client.get_or_create_collection(
+                name=self._collection_name,
+                metadata={"hnsw:space": "cosine"},
+            )
             self._use_chroma = True
         except Exception:
             # Nếu chưa cài ChromaDB hoặc khởi tạo thất bại, chuyển sang lưu trong RAM.
@@ -78,7 +81,15 @@ class EmbeddingStore:
         # heapq.nlargest hiệu quả khi chỉ cần lấy một số ít kết quả tốt nhất.
         best = heapq.nlargest(top_k, scored, key=lambda item: item[0])
         # Tạo dict mới để bổ sung điểm mà không sửa record đang được lưu.
-        return [{**record, "score": score} for score, record in best]
+        return [
+            {
+                "id": record["id"],
+                "content": record["content"],
+                "metadata": dict(record["metadata"]),
+                "score": score,
+            }
+            for score, record in best
+        ]
 
     def add_documents(self, docs: list[Document]) -> None:
         """
@@ -111,6 +122,34 @@ class EmbeddingStore:
         Ở chế độ trong bộ nhớ, độ tương đồng được tính bằng tích vô hướng giữa
         embedding của câu truy vấn và embedding của từng record đã lưu.
         """
+        if top_k <= 0:
+            return []
+        if self._use_chroma and self._collection is not None:
+            collection_size = self._collection.count()
+            if collection_size == 0:
+                return []
+            query_embedding = self._embedding_fn(query)
+            response = self._collection.query(
+                query_embeddings=[query_embedding],
+                n_results=min(top_k, collection_size),
+                include=["documents", "metadatas", "distances"],
+            )
+            if not response.get("ids") or not response["ids"][0]:
+                return []
+            return [
+                {
+                    "id": record_id,
+                    "content": content,
+                    "metadata": metadata or {},
+                    "score": 1.0 - float(distance),
+                }
+                for record_id, content, metadata, distance in zip(
+                    response["ids"][0],
+                    response["documents"][0],
+                    response["metadatas"][0],
+                    response["distances"][0],
+                )
+            ]
         return self._search_records(query, self._store, top_k)
 
     def get_collection_size(self) -> int:
@@ -127,7 +166,37 @@ class EmbeddingStore:
         đều khớp. Sau đó mới tính độ tương đồng để lấy các kết quả tốt nhất.
         """
         if not metadata_filter:
-            return self._search_records(query, self._store, top_k)
+            return self.search(query, top_k)
+
+        if top_k <= 0:
+            return []
+        if self._use_chroma and self._collection is not None:
+            collection_size = self._collection.count()
+            if collection_size == 0:
+                return []
+            query_embedding = self._embedding_fn(query)
+            response = self._collection.query(
+                query_embeddings=[query_embedding],
+                n_results=min(top_k, collection_size),
+                where=metadata_filter,
+                include=["documents", "metadatas", "distances"],
+            )
+            if not response.get("ids") or not response["ids"][0]:
+                return []
+            return [
+                {
+                    "id": record_id,
+                    "content": content,
+                    "metadata": metadata or {},
+                    "score": 1.0 - float(distance),
+                }
+                for record_id, content, metadata, distance in zip(
+                    response["ids"][0],
+                    response["documents"][0],
+                    response["metadatas"][0],
+                    response["distances"][0],
+                )
+            ]
 
         # all(...) bảo đảm record phải thỏa mãn đồng thời mọi điều kiện lọc.
         filtered_records = [

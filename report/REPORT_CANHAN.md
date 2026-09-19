@@ -1,7 +1,7 @@
 # Báo Cáo Cá Nhân — Lab 7: Embedding & Vector Store
 
 **Họ tên:** Nguyễn Văn Huy
-**Nhóm:** Sentinel
+**Nhóm:** G22
 **Ngày:** 19/09/2026
 
 > **Nộp 1 bản / sinh viên.** Phần nhóm (lựa chọn tài liệu, thiết kế chiến lược, bộ câu hỏi đánh giá, demo) nộp chung 1 bản trong `REPORT_NHOM.md`. Chi tiết thang điểm: `docs/SCORING.md`.
@@ -142,7 +142,7 @@ tests/test_solution.py::TestEmbeddingStoreDeleteDocument::test_delete_reduces_co
 tests/test_solution.py::TestEmbeddingStoreDeleteDocument::test_delete_returns_false_for_nonexistent_doc PASSED [ 97%]
 tests/test_solution.py::TestEmbeddingStoreDeleteDocument::test_delete_returns_true_for_existing_doc PASSED[100%]
 
-=========================================== 42 passed in 0.11s ===========================================
+=========================================== 42 passed in 0.23s ===========================================
 
 Kết quả:
 - Project structure: 2/2 passed
@@ -157,10 +157,10 @@ Kết quả:
 - EmbeddingStore.search_with_filter: 3/3 passed
 - EmbeddingStore.delete_document: 3/3 passed
 
-42 passed in 0.12s
+42 passed in 0.23s
 
 Kết quả trên đã được kiểm tra lại độc lập trên toàn bộ tests/:
-42 passed in 0.20s
+42 passed in 0.23s
 ```
 
 **Số lượng bài test vượt qua (pass):** 42 / 42
@@ -190,18 +190,20 @@ Cặp 4 là kết quả đáng chú ý nhất: hai câu có ý nghĩa đối l�
 
 Chạy **5 câu hỏi đánh giá của nhóm** trên mã nguồn cá nhân của bạn trong gói `src`. **5 câu hỏi này phải trùng với các thành viên cùng nhóm** (xem `REPORT_NHOM.md`).
 
+Tôi sử dụng `FixedSizeChunker(chunk_size=500, overlap=50)` đúng với chiến lược cá nhân đã đăng ký trong báo cáo nhóm và mô hình `sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2`. Một kết quả chỉ được đánh dấu liên quan khi chunk thực sự chứa bằng chứng cần để trả lời, không chỉ vì lấy đúng tên tài liệu. Đây là lượt chạy cá nhân bằng mô hình local; điểm so sánh 7/10 trong báo cáo nhóm được tổng hợp từ lượt benchmark chung dùng `text-embedding-3-small`, vì vậy hai bộ score không được so sánh trực tiếp.
+
 | # | Câu hỏi (Query) | Top-1 Chunk truy xuất được (tóm tắt) | Điểm Score | Có liên quan không? (Relevant) | Câu trả lời của Agent (tóm tắt) |
 |---|-------|--------------------------------|-------|-----------|------------------------|
-| 1 | Chưa thống nhất trong báo cáo nhóm | Chưa chạy | Chưa đo | Chưa đánh giá | Chưa chạy |
-| 2 | Chưa thống nhất trong báo cáo nhóm | Chưa chạy | Chưa đo | Chưa đánh giá | Chưa chạy |
-| 3 | Chưa thống nhất trong báo cáo nhóm | Chưa chạy | Chưa đo | Chưa đánh giá | Chưa chạy |
-| 4 | Chưa thống nhất trong báo cáo nhóm | Chưa chạy | Chưa đo | Chưa đánh giá | Chưa chạy |
-| 5 | Chưa thống nhất trong báo cáo nhóm | Chưa chạy | Chưa đo | Chưa đánh giá | Chưa chạy |
+| 1 | Học phí hệ đại học chính quy đại trà cho khóa 68 trong năm học 2026-2027 là bao nhiêu tiền mỗi tín chỉ? | Chunk tham khảo về công thức tính học phí, không chứa mức của khóa 68 | 0.709836 | Top-1 không liên quan trực tiếp; chunk chứa **880.000 đồng/tín chỉ** ở hạng 3 | Agent trả lời đúng 880.000 đồng/tín chỉ nhờ bằng chứng trong top-3. |
+| 2 | Sinh viên IBD@NEU khóa 22, đợt tháng 8/2026, phải nộp học phí trước thời hạn nào và bằng phương thức nào? | Thông báo IBD khóa 22 kỳ Mùa Xuân 2026, sai đợt | 0.864897 | Không; tài liệu tháng 8 ở hạng 2 nhưng chunk chứa hạn nộp và phương thức không vào top-3 | Agent báo ngữ cảnh chưa đủ để xác định chính xác hạn và phương thức. |
+| 3 | Sinh viên thuộc diện chính sách cần nộp hồ sơ miễn, giảm học phí đợt 2 năm học 2025-2026 ở đâu và trong thời gian nào? | Chunk miễn giảm chứa thời gian 02/03–20/03/2026 nhưng bị cắt giữa cụm “phòng 302” | 0.846917 | Có một phần; dùng `metadata_filter={"audience": "student"}` nhưng thiếu địa điểm đầy đủ | Agent trả lời được thời gian và nói rõ địa điểm trong ngữ cảnh bị thiếu. |
+| 4 | Theo tài liệu tham khảo về học phí NEU 2026, công thức tham khảo để tính học phí là gì? | Phần giới thiệu nguồn tham khảo, chưa chứa công thức | 0.771451 | Không; chunk chứa công thức không nằm trong top-3 | Agent báo chưa đủ thông tin thay vì suy đoán công thức. |
+| 5 | Trong năm học 2026-2027, chương trình Khoa học dữ liệu và Trí tuệ nhân tạo có mức học phí bao nhiêu? | Phần căn cứ và chương trình chuẩn của Quyết định 985 | 0.645267 | Không; chunk chứa dòng **54 triệu đồng** không nằm trong top-3 | Agent báo ngữ cảnh chưa đủ để kết luận mức học phí. |
 
-**Bao nhiêu câu hỏi trả về chunk có liên quan trong top-3?** Chưa đo / 5
+**Bao nhiêu câu hỏi trả về chunk có liên quan trong top-3?** Lượt kiểm tra độc lập bằng mô hình local đạt 2 / 5: câu 1 có đầy đủ bằng chứng ở hạng 3, còn câu 3 có bằng chứng liên quan nhưng bị cắt mất một phần địa điểm. Trong lượt benchmark chung dùng `text-embedding-3-small`, nhóm chấm chiến lược FixedSize của tôi 7 / 10 theo rubric; đây là kết quả chính thức dùng trong bảng so sánh nhóm. Hai kết quả cho thấy chất lượng embedding có ảnh hưởng, nhưng hạn chế cắt rời bảng của FixedSize vẫn xuất hiện ở cả phần phân tích định tính.
 
 **Điều hay nhất tôi học được từ thành viên khác / nhóm khác (qua demo):**
-Chưa có dữ liệu demo nhóm để kết luận. Sau buổi so sánh, tôi sẽ bổ sung một nhận xét cụ thể về cách một thành viên lựa chọn chunking hoặc metadata giúp cải thiện kết quả retrieval trên cùng bộ câu hỏi.
+Điều hữu ích nhất tôi học được là chiến lược của Nguyễn Quốc Đạt và Nguyễn Trần Nhựt Nam tôn trọng ranh giới cấu trúc tốt hơn: `RecursiveChunker` giữ các khối nội dung tự nhiên, còn `HeadingChunker` giữ tiêu đề cùng bảng hoặc điều khoản. So với hai cách đó, FixedSize của tôi dễ cắt rời con số, thời hạn hoặc địa điểm khỏi phần mô tả; overlap chỉ giảm chứ không loại bỏ hoàn toàn vấn đề này.
 
 ---
 
@@ -213,5 +215,5 @@ Chưa có dữ liệu demo nhóm để kết luận. Sau buổi so sánh, tôi s
 | Hướng tiếp cận của tôi (My Approach) | 10 / 10 |
 | Hoàn thiện code (Core Implementation — tests) | 30 / 30 |
 | Dự đoán độ tương tự (Similarity Predictions) | 5 / 5 |
-| Kết quả truy xuất của tôi (Competition Results) | Chưa tự đánh giá / 10 |
-| **Tổng phần cá nhân đã xác nhận** | **50 / 60** |
+| Kết quả truy xuất của tôi (Competition Results) | 7 / 10 |
+| **Tổng phần cá nhân** | **57 / 60** |

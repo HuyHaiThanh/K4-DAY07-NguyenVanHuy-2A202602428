@@ -19,11 +19,19 @@ class KnowledgeBaseAgent:
 
     def answer(self, question: str, top_k: int = 3) -> str:
         chunks = self.store.search(question, top_k=top_k)
-        context = "\n\n".join(chunk["content"] for chunk in chunks)
+        context = "\n\n".join(
+            f"[{index}] {chunk['content']}"
+            for index, chunk in enumerate(chunks, start=1)
+        )
+        if not context:
+            context = "Không tìm thấy ngữ cảnh liên quan trong cơ sở tri thức."
         prompt = (
-            "Answer the question using only the context below.\n\n"
-            f"Context:\n{context}\n\n"
-            f"Question: {question}\n"
-            "Answer:"
+            "Bạn là trợ lý tra cứu quy định đại học. Chỉ trả lời dựa trên "
+            "ngữ cảnh được cung cấp, không suy đoán hoặc tự tạo quy định. "
+            "Nếu ngữ cảnh không đủ thông tin, hãy nói rõ rằng không tìm thấy "
+            "thông tin trong cơ sở tri thức.\n\n"
+            f"NGỮ CẢNH:\n{context}\n\n"
+            f"CÂU HỎI: {question}\n"
+            "TRẢ LỜI:"
         )
         return self.llm_fn(prompt)

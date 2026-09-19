@@ -1,0 +1,37 @@
+BENCHMARK NHÓM G22 — LAB 7: EMBEDDING & VECTOR STORE
+
+Chủ đề: Học phí, thanh toán và miễn giảm học phí tại NEU
+Corpus: 7 tài liệu công khai trong data/hoc-phi/
+Embedding dùng trong lượt benchmark chung: text-embedding-3-small
+Top-k: 3
+
+Năm câu hỏi chung
+1. Học phí hệ đại học chính quy đại trà cho khóa 68 trong năm học 2026-2027 là bao nhiêu tiền mỗi tín chỉ?
+2. Sinh viên IBD@NEU khóa 22, đợt tháng 8/2026, phải nộp học phí trước thời hạn nào và bằng phương thức nào?
+3. Sinh viên thuộc diện chính sách cần nộp hồ sơ miễn, giảm học phí đợt 2 năm học 2025-2026 ở đâu và trong thời gian nào?
+4. Theo tài liệu tham khảo về học phí NEU 2026, công thức tham khảo để tính học phí là gì?
+5. Trong năm học 2026-2027, chương trình Khoa học dữ liệu và Trí tuệ nhân tạo có mức học phí bao nhiêu?
+
+Kết quả chiến lược tốt nhất: RecursiveChunker(chunk_size=700)
+Q1: top-1, score=0.657766 — 880.000 đồng/tín chỉ.
+Q2: top-1, score=0.777727 — chuyển khoản trước 17:00 ngày 21/08/2026 vào tài khoản 2116678989.
+Q3: top-1, score=0.766433 — phòng 302 Nhà A1, từ 02/03/2026 đến hết 20/03/2026.
+    Filter: metadata_filter={"audience": "student"}
+Q4: top-1, score=0.727442 — Học phí = số tín chỉ đăng ký × đơn giá mỗi tín chỉ.
+Q5: top-1, score=0.672587 — Data Science và AI: 54 triệu đồng/năm.
+Tổng: 10/10.
+
+So sánh thành viên
+- Nguyễn Trần Nhựt Nam — HeadingChunker: 10/10.
+- Nguyễn Quốc Đạt — RecursiveChunker(chunk_size=700): 10/10.
+- Nguyễn Văn Huy — FixedSizeChunker(chunk_size=500, overlap=50): 7/10.
+- Nguyễn Trọng Phúc — SentenceChunker(max_sentences_per_chunk=3): 8/10.
+
+Kết luận
+RecursiveChunker và HeadingChunker phù hợp nhất với tài liệu hành chính có heading và bảng Markdown. FixedSizeChunker dễ cắt rời hàng bảng hoặc điều khoản; SentenceChunker có thể tạo chunk quá dài khi bảng không có dấu kết thúc câu. Metadata filter giúp câu 3 loại tài liệu audience=all, nhưng nếu gán metadata sai hoặc lọc quá chặt thì có thể làm mất kết quả liên quan.
+
+Lệnh demo an toàn trước buổi trình bày
+python bench.py --strategy recursive --chunk-size 700 --provider local --query 3
+
+Lệnh tái hiện cấu hình benchmark nhóm khi đã cấu hình OPENAI_API_KEY
+python bench.py --strategy recursive --chunk-size 700 --provider openai

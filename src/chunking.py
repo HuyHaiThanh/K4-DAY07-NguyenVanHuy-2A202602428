@@ -16,6 +16,10 @@ class FixedSizeChunker:
     """
 
     def __init__(self, chunk_size: int = 500, overlap: int = 50) -> None:
+        if chunk_size <= 0:
+            raise ValueError("chunk_size must be greater than 0")
+        if overlap < 0 or overlap >= chunk_size:
+            raise ValueError("overlap must satisfy 0 <= overlap < chunk_size")
         # Lưu kích thước tối đa của mỗi chunk và số ký tự được lặp lại giữa
         # hai chunk liên tiếp để hạn chế mất ngữ cảnh tại vị trí cắt.
         self.chunk_size = chunk_size
@@ -66,7 +70,7 @@ class SentenceChunker:
         # strip() loại bỏ khoảng trắng thừa; điều kiện cuối bỏ qua phần tử rỗng.
         sentences = [
             sentence.strip()
-            for sentence in re.split(r"(?<=[.!?]) |(?<=\.)\n", text)
+            for sentence in re.split(r"(?<=[.!?])\s+", text)
             if sentence.strip()
         ]
 

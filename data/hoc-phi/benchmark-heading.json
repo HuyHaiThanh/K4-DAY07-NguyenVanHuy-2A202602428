@@ -1,0 +1,190 @@
+{
+  "strategy": "heading",
+  "chunk_size": 500,
+  "embedding_backend": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+  "document_count": 7,
+  "chunk_count": 35,
+  "top3_recall": 5,
+  "queries": [
+    {
+      "query": "Học phí chương trình chuẩn của khóa 68 năm học 2026-2027 là bao nhiêu một tín chỉ?",
+      "gold_doc_id": "neu-tuition-decision-985-2026-2027",
+      "gold_answer": "Khóa 68 đóng 880.000 đồng mỗi tín chỉ.",
+      "evidence_terms": [
+        "khóa 68",
+        "880.000"
+      ],
+      "metadata_filter": {
+        "audience": "student",
+        "category": "tuition",
+        "document_version": "2026-2027"
+      },
+      "top3_contains_gold": true,
+      "top3_contains_evidence": true,
+      "results": [
+        {
+          "rank": 1,
+          "score": 0.7118,
+          "doc_id": "neu-tuition-decision-985-2026-2027",
+          "chunk_index": 0,
+          "preview": "# Học phí NEU năm học 2026–2027 theo Quyết định 985 ## Căn cứ và thời gian áp dụng Theo bài tổng hợp của Khoa Công nghệ thông tin, Đại học Kinh tế Quốc dân đã ban hành Quyết định số 985/QĐ-ĐHKTQD ngày 10/08/2026. Mức thu"
+        },
+        {
+          "rank": 2,
+          "score": 0.6591,
+          "doc_id": "neu-tuition-decision-985-2026-2027",
+          "chunk_index": 1,
+          "preview": "## Chương trình đào tạo đại học ### Chương trình chuẩn | Khóa | Đơn giá | | --- | ---: | | Khóa 65, 66, 67 | 770.000 đồng/tín chỉ | | Khóa 68 (tuyển sinh năm 2026) | 880.000 đồng/tín chỉ |"
+        },
+        {
+          "rank": 3,
+          "score": 0.5912,
+          "doc_id": "neu-tuition-decision-985-2026-2027",
+          "chunk_index": 7,
+          "preview": "## Ghi chú về thay đổi và hỗ trợ Nguồn cho biết phần lớn chương trình tiếng Anh tăng khoảng 2–6% so với trước. Quyết định 985 được dùng để thay thế các văn bản học phí trước đó trong thời gian áp dụng nêu trên. Thông tin"
+        }
+      ]
+    },
+    {
+      "query": "Sinh viên IBD khóa 22 nhập học chuyên ngành Ngân hàng tài chính phải đóng bao nhiêu?",
+      "gold_doc_id": "neu-tuition-payment-ibd-2026",
+      "gold_answer": "Mức học phí là 74.800.000 đồng, gồm học phí kỳ 1 và hai môn cơ sở.",
+      "evidence_terms": [
+        "ngân hàng tài chính",
+        "74.800.000"
+      ],
+      "top3_contains_gold": true,
+      "top3_contains_evidence": true,
+      "results": [
+        {
+          "rank": 1,
+          "score": 0.6211,
+          "doc_id": "neu-tuition-payment-ibd-2026",
+          "chunk_index": 3,
+          "preview": "| Nhập học chuyên ngành Ngân hàng tài chính | 74.800.000 đồng | | Digital Marketing, Đại học Leeds Beckett | 28.000.000 đồng | | Kinh tế học tài chính, Đại học Lincoln | 45.000.000 đồng | | Quản trị kinh doanh, chuyên ng"
+        },
+        {
+          "rank": 2,
+          "score": 0.6097,
+          "doc_id": "neu-tuition-reference-2026",
+          "chunk_index": 3,
+          "preview": "## Cách tính và khoản thu liên quan Công thức tham khảo: ```text Học phí = số tín chỉ đăng ký × đơn giá mỗi tín chỉ ``` Ví dụ trong bài viết: 18 tín chỉ × 550.000 đồng/tín chỉ = 9.900.000 đồng. Ngoài học phí, sinh viên c"
+        },
+        {
+          "rank": 3,
+          "score": 0.6015,
+          "doc_id": "neu-tuition-ibd-english-level1-2024",
+          "chunk_index": 0,
+          "preview": "# Thông báo nộp học phí IBD@NEU lớp tiếng Anh cấp độ 1 tháng 9/2024 ## Căn cứ và mức học phí Thông báo căn cứ Quyết định số 669/QĐ-ĐHKTQD ngày 25/06/2024 về mức thu học phí các hệ đào tạo năm học 2024–2025 của Đại học Ki"
+        }
+      ]
+    },
+    {
+      "query": "Hạn nộp hồ sơ miễn giảm học phí đợt 2 năm học 2025-2026 là ngày nào?",
+      "gold_doc_id": "neu-tuition-waiver-2025-2026",
+      "gold_answer": "Hồ sơ được nhận từ 02/03/2026 đến hết 20/03/2026.",
+      "evidence_terms": [
+        "02/03/2026",
+        "20/03/2026"
+      ],
+      "top3_contains_gold": true,
+      "top3_contains_evidence": true,
+      "results": [
+        {
+          "rank": 1,
+          "score": 0.7664,
+          "doc_id": "neu-tuition-waiver-2025-2026",
+          "chunk_index": 0,
+          "preview": "# Thu hồ sơ miễn giảm học phí và hỗ trợ chi phí học tập ## Đối tượng áp dụng Thông báo đợt 2 năm học 2025–2026 dành cho sinh viên các khóa 64, 65, 66 và 67 thuộc những nhóm chính sách sau:"
+        },
+        {
+          "rank": 2,
+          "score": 0.7437,
+          "doc_id": "neu-tuition-decision-985-2026-2027",
+          "chunk_index": 0,
+          "preview": "# Học phí NEU năm học 2026–2027 theo Quyết định 985 ## Căn cứ và thời gian áp dụng Theo bài tổng hợp của Khoa Công nghệ thông tin, Đại học Kinh tế Quốc dân đã ban hành Quyết định số 985/QĐ-ĐHKTQD ngày 10/08/2026. Mức thu"
+        },
+        {
+          "rank": 3,
+          "score": 0.716,
+          "doc_id": "neu-tuition-waiver-2025-2026",
+          "chunk_index": 2,
+          "preview": "## Thời gian, hồ sơ và địa điểm nộp - Thời gian nộp hồ sơ: từ ngày 02/03/2026 đến hết ngày 20/03/2026. - Diện miễn, giảm học phí: chuẩn bị 1 bộ hồ sơ theo Phụ lục 01. - Diện hỗ trợ chi phí học tập hoặc trợ cấp xã hội: ch"
+        }
+      ]
+    },
+    {
+      "query": "Các bước thanh toán học phí trực tuyến qua cổng NEU là gì?",
+      "gold_doc_id": "neu-tuition-payment-guide-2020",
+      "gold_answer": "Đăng nhập cổng tương ứng, mở Tài chính sinh viên, kiểm tra nợ phí, chọn thanh toán online hoặc truy cập e-bills.vn/pay/neu và tra cứu bằng mã sinh viên.",
+      "evidence_terms": [
+        "tài chính sinh viên",
+        "e-bills.vn/pay/neu"
+      ],
+      "top3_contains_gold": true,
+      "top3_contains_evidence": true,
+      "results": [
+        {
+          "rank": 1,
+          "score": 0.6995,
+          "doc_id": "neu-tuition-payment-guide-2020",
+          "chunk_index": 0,
+          "preview": "# Hướng dẫn sử dụng cổng thanh toán để thanh toán học phí Tài liệu hướng dẫn áp dụng cho sinh viên khóa 61 và học viên cao học các khóa khi tra cứu và thanh toán học phí trực tuyến."
+        },
+        {
+          "rank": 2,
+          "score": 0.676,
+          "doc_id": "neu-tuition-payment-guide-2020",
+          "chunk_index": 2,
+          "preview": "Tài liệu này chỉ hướng dẫn quy trình truy cập và tra cứu trên cổng thanh toán; mức học phí, hạn nộp và chính sách miễn giảm phải lấy theo thông báo tương ứng của NEU."
+        },
+        {
+          "rank": 3,
+          "score": 0.6631,
+          "doc_id": "neu-tuition-payment-guide-2020",
+          "chunk_index": 1,
+          "preview": "## Các bước thanh toán 1. Đăng nhập tài khoản học viên tại `thacsi.neu.edu.vn` hoặc tài khoản sinh viên tại `daihocchinhquy.neu.edu.vn`. 2. Mở mục **Tài chính sinh viên** để kiểm tra các khoản nợ phí. 3. Chọn **Thanh toá"
+        }
+      ]
+    },
+    {
+      "query": "Sinh viên học tiếng Anh cấp độ 1 tháng 9/2024 phải nộp bao nhiêu và trước thời hạn nào?",
+      "gold_doc_id": "neu-tuition-ibd-english-level1-2024",
+      "gold_answer": "Học phí là 23.000.000 đồng, hạn nộp hết ngày 11/09/2024 và gửi chứng từ trước 17:00 cùng ngày.",
+      "evidence_terms": [
+        "23.000.000",
+        "11/09/2024"
+      ],
+      "metadata_filter": {
+        "audience": "student",
+        "department": "international-programs",
+        "document_version": "2024-2025"
+      },
+      "top3_contains_gold": true,
+      "top3_contains_evidence": true,
+      "results": [
+        {
+          "rank": 1,
+          "score": 0.6968,
+          "doc_id": "neu-tuition-ibd-english-level1-2024",
+          "chunk_index": 0,
+          "preview": "# Thông báo nộp học phí IBD@NEU lớp tiếng Anh cấp độ 1 tháng 9/2024 ## Căn cứ và mức học phí Thông báo căn cứ Quyết định số 669/QĐ-ĐHKTQD ngày 25/06/2024 về mức thu học phí các hệ đào tạo năm học 2024–2025 của Đại học Ki"
+        },
+        {
+          "rank": 2,
+          "score": 0.4935,
+          "doc_id": "neu-tuition-ibd-english-level1-2024",
+          "chunk_index": 1,
+          "preview": "## Phương thức và thời hạn nộp - Phương thức nộp: chuyển khoản. - Tài khoản VND: `2116678989`, Trường Đại học Kinh tế Quốc dân, Ngân hàng TMCP Đầu tư và Phát triển Việt Nam, chi nhánh Hà Nội. - Nội dung chuyển khoản: mã "
+        },
+        {
+          "rank": 3,
+          "score": 0.3582,
+          "doc_id": "neu-tuition-ibd-english-level1-2024",
+          "chunk_index": 2,
+          "preview": "Sau thời hạn trên, sinh viên chưa nộp học phí được coi là không có nhu cầu tham gia chương trình."
+        }
+      ]
+    }
+  ]
+}
