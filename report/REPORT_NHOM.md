@@ -93,12 +93,40 @@ FixedSizeChunker(chunk_size=500, overlap=50)
 
 **Thành viên 3 — Nguyễn Trần Nhựt Nam**
 
-- **Loại chiến lược:** RecursiveChunker (`chunk_size=700`)
-- **Mô tả & lý do chọn:** Thử các separator theo thứ tự đoạn, dòng, câu, khoảng trắng rồi mới cắt cứng. Cách này ưu tiên giữ các đơn vị ngữ nghĩa tự nhiên và giúp các con số trong bảng/thông báo đi cùng phần mô tả liên quan.
-- **Code snippet:**
+- **Loại chiến lược:** HeadingChunker (Custom Chunker)
+- **Mô tả & lý do chọn:** Chia nhỏ văn bản dựa trên các tiêu đề Markdown (`#`, `##`, `###`) hoặc các dòng dạng `Điều n`. Với section dài vượt ngưỡng, chunker dùng recursive fallback để cắt nhỏ nhưng gắn lại tiêu đề vào từng mảnh con, nhờ đó không làm mất ngữ cảnh của quy định, điều khoản hoặc bảng.
+- **Code snippet (custom):**
 
 ```python
-RecursiveChunker(chunk_size=700)
+class HeadingChunker:
+    def __init__(self, max_chunk_size: int = 500,
+                 heading_pattern: str | None = None) -> None:
+        self.max_chunk_size = max_chunk_size
+        self.heading_pattern = heading_pattern or r"(?m)^(?=#{1,6}\s+|Điều\s+\d+)"
+        self._fallback_chunker = RecursiveChunker(chunk_size=max_chunk_size)
+
+    def chunk(self, text: str) -> list[str]:
+        if not text:
+            return []
+        sections = [
+            s.strip() for s in re.split(self.heading_pattern, text.strip())
+            if s.strip()
+        ]
+        chunks = []
+        for section in sections:
+            if len(section) <= self.max_chunk_size:
+                chunks.append(section)
+                continue
+            lines = section.splitlines()
+            heading_line = lines[0].strip() if lines else ""
+            body = "\n".join(lines[1:]).strip() if len(lines) > 1 else section
+            for sub in self._fallback_chunker.chunk(body):
+                chunks.append(
+                    f"{heading_line}\n{sub}"
+                    if heading_line and not sub.startswith(heading_line)
+                    else sub
+                )
+        return chunks
 ```
 
 **Thành viên 4 — Nguyễn Quốc Đạt**
@@ -112,10 +140,10 @@ RecursiveChunker(chunk_size=700)
 |---|---|---:|---|---|
 | Nguyễn Trọng Phúc | SentenceChunker + `text-embedding-3-small` | 9/10 | Giữ ranh giới câu, kết quả ổn định và dễ giải thích. | Có thể tạo chunk dài, đôi khi nhiều ý bị gộp. |
 | Nguyễn Văn Huy | FixedSize, overlap 50 | 7/10 | Đơn giản, kiểm soát kích thước và chi phí tốt. | Có thể cắt rời ngày, số tiền hoặc địa điểm khỏi ngữ cảnh. |
-| Nguyễn Trần Nhựt Nam | Recursive, chunk size 700 | 10/10 | Giữ cấu trúc tự nhiên, bảo toàn bằng chứng cần trả lời. | Chunk có độ dài không đồng đều, cần kiểm soát ngưỡng. |
+| Nguyễn Trần Nhựt Nam | HeadingChunker (Custom) | 10/10 | Giữ nguyên vẹn đơn vị ngữ nghĩa từng mục/tiêu đề; tự động gắn lại tiêu đề khi phân tách nhỏ. | Cần tài liệu có tiêu đề Markdown hoặc cấu trúc Điều/Khoản rõ ràng. |
 | Nguyễn Quốc Đạt | Recursive + metadata filter | 9/10 | Tốt với câu hỏi có điều kiện lọc và các đoạn dài. | Phụ thuộc vào metadata được gán đầy đủ, nhất quán. |
 
-**Chiến lược tốt nhất cho chủ đề này:** Nhóm chọn SentenceChunker với tối đa 3 câu/chunk làm cấu hình benchmark chung vì nó cân bằng giữa độ dễ kiểm soát, khả năng giữ ranh giới câu và kết quả truy xuất. Tuy nhiên, kết quả so sánh cho thấy RecursiveChunker phù hợp hơn khi tài liệu có bảng, nhiều dòng hoặc câu trả lời cần lấy đồng thời ngày, địa điểm và điều kiện. Vì vậy, nếu triển khai thực tế, nhóm sẽ ưu tiên recursive chunking cho thông báo dài và kết hợp metadata filter với embedding.
+**Chiến lược tốt nhất cho chủ đề này:** SentenceChunker với tối đa 3 câu/chunk phù hợp làm cấu hình benchmark chung vì dễ kiểm soát và giữ ranh giới câu. Tuy nhiên, với tập tài liệu có cấu trúc Markdown, HeadingChunker của Nguyễn Trần Nhựt Nam là lựa chọn tốt nhất về bảo toàn ngữ nghĩa: mỗi chunk giữ được tiêu đề mục, còn section dài vẫn được cắt nhỏ an toàn bằng recursive fallback. RecursiveChunker là phương án dự phòng tốt cho văn bản không có heading rõ ràng; trong mọi trường hợp nên kết hợp metadata filter với embedding.
 
 ---
 
@@ -151,7 +179,7 @@ RecursiveChunker(chunk_size=700)
 
 **Những phân tích nhóm sẽ trình bày:**
 
-1. Cùng một câu hỏi có thể cho kết quả khác nhau tùy chunking: FixedSize dễ cắt rời bằng chứng, trong khi SentenceChunker và RecursiveChunker giữ ngữ cảnh tốt hơn.
+1. Cùng một câu hỏi có thể cho kết quả khác nhau tùy chunking: FixedSize dễ cắt rời bằng chứng, trong khi SentenceChunker, RecursiveChunker và đặc biệt HeadingChunker giữ ngữ cảnh tốt hơn.
 2. Metadata filter là một lớp lọc quan trọng trước similarity search; ở câu hỏi về hồ sơ miễn giảm, `audience=student` giúp chunk đúng đứng hạng 1.
 3. Retrieval cần được chấm theo bằng chứng trong chunk, không chỉ theo `doc_id`. Một tài liệu đúng chủ đề nhưng không chứa ngày, số tiền hoặc địa điểm cần thiết vẫn chưa đủ để trả lời đúng.
 
@@ -174,4 +202,3 @@ Nhóm sẽ giữ riêng các bảng, tiêu đề và mục “thời hạn/phư�
 | Chất lượng truy xuất (Retrieval Quality) | 9 / 10 |
 | Thuyết trình (Demo) | 5 / 5 |
 | **Tổng phần nhóm** | **38 / 40** |
-
